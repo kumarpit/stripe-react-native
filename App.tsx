@@ -1,20 +1,30 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { useState, useEffect } from 'react';
+import { StripeProvider } from '@stripe/stripe-react-native';
+import { fetchPublishableKey } from './helpers';
+import PaymentCard from './components/PaymentCard';
+import * as Linking from 'expo-linking';
+import Constants from 'expo-constants';
+
+const urlScheme = Constants.appOwnership === 'expo' ? Linking.createURL('/--/') : Linking.createURL('')
 
 export default function App() {
+  const [publishableKey, setPublishableKey] = useState("");
+
+  useEffect(() => {
+    const init = async () => {
+      const publishableKey = await fetchPublishableKey();
+      if (publishableKey) setPublishableKey(publishableKey);
+    }
+
+    init();
+  }, [])
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <StripeProvider 
+      publishableKey={publishableKey}
+      urlScheme={urlScheme}
+    >
+        <PaymentCard />
+    </StripeProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
