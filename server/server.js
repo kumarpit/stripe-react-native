@@ -29,9 +29,11 @@ app.post('/payment-sheet', async (req, res) => {
     )
     const paymentIntent = await stripe.paymentIntents.create({
         amount: 1099,
-        currency: 'cad',
+        currency: 'inr',
         customer: customer.id,
-        payment_method_types: ["card"]
+        automatic_payment_methods: {
+            enabled: true,
+        },
     })
 
     res.json({
