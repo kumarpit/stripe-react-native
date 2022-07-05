@@ -29,3 +29,24 @@ export const fetchPaymentIntentClientSecret = async () => {
     const { clientSecret, error } = await response.json();
     return { clientSecret, error };
 }
+
+export const fetchPaymentSheetParams = async () => {
+    try {
+        const response = await fetch(`${API_URL}/payment-sheet`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        const { paymentIntent, ephemeralKey, customer, publishableKey } = await response.json();
+
+        return {
+            paymentIntent,
+            ephemeralKey,
+            customer,
+            publishableKey
+        }
+    } catch (err) {
+        console.warn("Unable.");
+    }
+}

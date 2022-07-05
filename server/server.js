@@ -21,20 +21,23 @@ app.get('/config', (req, res) => {
     res.json({ publishableKey: process.env.PUBLISHABLE_KEY })
 })
 
-app.get('/create-payment-intent', async (req, res) => {
-    try {
-        const paymentIntent = await stripe.paymentIntents.create({
-            amount: 1000,
-            currency: 'cad'
-        });
+app.post('/payment-sheet', async (req, res) => {
+    const customer = await stripe.customers.create();
+    const ephemeralKey = await stripe.ephemeralKeys.create(
+        {customer: customer.id},
+        {apiVersion: '2020-08-27'}
+    )
+    const paymentIntent = await stripe.paymentIntents.create({
+        amount: 1099,
+        currency: 'cad',
+        customer: customer.id,
+        payment_method_types: ["card"]
+    })
 
-        const clientSecret = paymentIntent.client_secret;
-
-        res.json({
-            clientSecret: clientSecret
-        })
-    } catch(err)  {
-        console.error(err.message);
-        res.json({ error: err.message });
-    }
+    res.json({
+        paymentIntent: paymentIntent.client_secret,
+        ephemeralKey: ephemeralKey.secret,
+        customer: customer.id,
+        publishableKey: process.env.PUBLISHABLE_KEY,
+    })
 })

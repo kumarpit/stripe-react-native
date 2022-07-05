@@ -22,7 +22,6 @@ export default function App() {
   return (
     <StripeProvider 
       publishableKey={publishableKey}
-      urlScheme={urlScheme}
     >
         <PaymentCard />
     </StripeProvider>
