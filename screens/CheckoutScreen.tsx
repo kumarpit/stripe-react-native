@@ -3,11 +3,13 @@ import PaymentCard from "../components/PaymentCard"
 import { fetchPublishableKey } from "../helpers";
 import { StripeProvider as _StripeProvider } from '@stripe/stripe-react-native';
 import type { Props as StripeProviderProps } from '@stripe/stripe-react-native/lib/typescript/src/components/StripeProvider';
+import { CheckoutScreenProps } from '../navigation/types';
 
 const StripeProvider = _StripeProvider as React.FC<StripeProviderProps>;
 
-const CheckoutScreen = () => {
-    const [publishableKey, setPublishableKey] = useState("");
+const CheckoutScreen = ({ route }: CheckoutScreenProps) => {
+    const [publishableKey, setPublishableKey] = useState("");   
+    const { customerId } = route.params;
 
     useEffect(() => {
         const init = async () => {
@@ -21,7 +23,7 @@ const CheckoutScreen = () => {
         <StripeProvider 
             publishableKey={publishableKey}
         >
-            <PaymentCard />    
+            <PaymentCard customerId={customerId} />    
         </StripeProvider>
     )
 }

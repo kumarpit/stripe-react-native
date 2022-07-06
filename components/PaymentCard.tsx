@@ -3,7 +3,7 @@ import { Button, Alert, View } from 'react-native';
 import { useStripe } from '@stripe/stripe-react-native';
 import { fetchPaymentSheetParams } from '../helpers';
 
-const PaymentCard = () => {
+const PaymentCard = ({ customerId } : { customerId: string }) => {
     const { initPaymentSheet, presentPaymentSheet } = useStripe();
     const [loading, setLoading] = useState(false);
 
@@ -11,13 +11,12 @@ const PaymentCard = () => {
         const {
             paymentIntent,
             ephemeralKey, 
-            customer,
             publishableKey
-        } = await fetchPaymentSheetParams() || {};
+        } = await fetchPaymentSheetParams(customerId) || {};
         
 
         const { error } = await initPaymentSheet({
-            customerId: customer,
+            customerId: customerId,
             customerEphemeralKeySecret: ephemeralKey,
             paymentIntentClientSecret: paymentIntent,
             merchantDisplayName: 'wavy',
