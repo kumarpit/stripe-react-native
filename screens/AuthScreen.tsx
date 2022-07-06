@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { View, TextInput, Button } from 'react-native';
+import { AuthScreenProps } from '../navigation/types';
 
-const AuthScreen = () => {    
+const AuthScreen = ({ navigation } : AuthScreenProps) => {    
     const [ username, setUsername ] = useState('');
     const [ password, setPassword ] = useState('');
     return (
@@ -18,11 +19,11 @@ const AuthScreen = () => {
             />
             <Button 
                 title='Login'
-                onPress={() => console.log('')}
+                onPress={() => navigation.navigate('Checkout')}
             />
             <Button 
                 title='Signup'
-                onPress={() => console.log('')}
+                onPress={() => navigation.navigate('Checkout')}
             />
         </View>
     )
