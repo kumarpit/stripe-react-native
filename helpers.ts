@@ -1,5 +1,5 @@
 import { Alert } from "react-native";
-import { Method, User } from './types';
+import { Method, Product, User } from './types';
 
 const API_URL = 'http://192.168.1.18:3000';
 
@@ -56,7 +56,7 @@ export const fetchPaymentIntentClientSecret = async () => {
     return { clientSecret, error };
 }
 
-export const fetchPaymentSheetParams = async (customerId: string) => {
+export const fetchPaymentSheetParams = async (customerId: string, productsId: string[]) => {
     try {
         const response = await fetch(`${API_URL}/payment-sheet`, {
             method: 'POST',
@@ -64,7 +64,8 @@ export const fetchPaymentSheetParams = async (customerId: string) => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                customerId: customerId
+                customerId: customerId,
+                productsId: productsId
             })
         })
         const { paymentIntent, ephemeralKey, customer, publishableKey } = await response.json();
@@ -112,5 +113,14 @@ export const loginUser = async (username: string, password: string) => {
         return response;
     } catch(err) {
         console.log(JSON.stringify(err));
+    }
+}
+
+export const fetchProducts = async () => {
+    try {
+        const response = await request<Product[]>('products', Method.GET);
+        return response;
+    } catch (err) {
+        console.warn(err);
     }
 }

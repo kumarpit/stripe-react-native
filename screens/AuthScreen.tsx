@@ -18,7 +18,7 @@ const AuthScreen = ({ navigation } : AuthScreenProps) => {
         const success = await signupUser(username, password);
         if (success) {
             setCustomerId(success.customerId);
-            navigation.navigate('Checkout', { customerId: customerId });
+            navigation.navigate('Products', { customerId: success.customerId });
         }
     }
 
@@ -41,7 +41,7 @@ const AuthScreen = ({ navigation } : AuthScreenProps) => {
             />
             <Button 
                 title='Login'
-                onPress={() => console.log('login')}
+                onPress={() => navigation.navigate('Products', { customerId: customerId })}
             />
             <Button 
                 title='Signup'

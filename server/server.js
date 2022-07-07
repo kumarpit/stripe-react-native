@@ -5,6 +5,7 @@ import { checkEnv } from './helpers.js';
 import cors from 'cors'
 import mongoose from 'mongoose';
 import User from './models/user.model.js';
+import Product from './models/product.model.js';
 
 dotenv.config({ path: '../.env' })
 
@@ -37,12 +38,24 @@ app.get('/config', (req, res) => {
     res.json({ publishableKey: process.env.PUBLISHABLE_KEY })
 })
 
+app.get('/customer', async (req, res) => {
+    res.json(await stripe.customers.create());
+})
+
 app.post('/payment-sheet', async (req, res) => {
-    const { customerId } = req.body;
+    const { customerId, productsId } = req.body;
     const ephemeralKey = await stripe.ephemeralKeys.create(
         {customer: customerId},
         {apiVersion: '2020-08-27'}
     )
+
+    let metadata = {}
+    productsId.map((id, index) => {
+        metadata[`${index}`] = id;
+    })
+
+    console.log(metadata);
+
     const paymentIntent = await stripe.paymentIntents.create({
         amount: 1099,
         currency: 'inr',
@@ -50,6 +63,7 @@ app.post('/payment-sheet', async (req, res) => {
         automatic_payment_methods: {
             enabled: true,
         },
+        metadata: metadata
     })
 
     res.json({
@@ -72,7 +86,7 @@ app.post('/signup', async (req, res) => {
         res.status(200).json(data)
     } catch (err) {
         res.status(500).json(err);
-        console.log(err);
+        console.warn(err);
     }
 })
 
@@ -91,6 +105,29 @@ app.post('/login', async (req, res) => {
     }
 })
 
-app.get('/customer', async (req, res) => {
-    return res.json(await stripe.customers.create());
+app.post('/product', async (req, res) => {
+    try {
+        const { name, price } = req.body
+        const newProduct = new Product({
+            name: name,
+            price: price
+        })
+        const data = await newProduct.save();
+        res.status(200).json(data);
+
+    } catch (err) {
+        
+        res.status(500).json(err);
+        console.warn(err);
+    }
 })
+
+app.get('/products', async (req, res) => {
+    try {
+        const data = await Product.find();
+        res.json(data);
+    } catch (err) {
+        res.status(500).json(err);
+        console.warn(err);
+    }
+}) 

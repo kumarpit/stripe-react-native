@@ -9,7 +9,7 @@ const StripeProvider = _StripeProvider as React.FC<StripeProviderProps>;
 
 const CheckoutScreen = ({ route }: CheckoutScreenProps) => {
     const [publishableKey, setPublishableKey] = useState("");   
-    const { customerId } = route.params;
+    const { customerId, productsId } = route.params;
 
     useEffect(() => {
         const init = async () => {
@@ -23,7 +23,7 @@ const CheckoutScreen = ({ route }: CheckoutScreenProps) => {
         <StripeProvider 
             publishableKey={publishableKey}
         >
-            <PaymentCard customerId={customerId} />    
+            <PaymentCard customerId={customerId} productsId={productsId} />    
         </StripeProvider>
     )
 }

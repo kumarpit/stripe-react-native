@@ -4,6 +4,12 @@ export type User = {
     customerId: string
 }
 
+export type Product = {
+    _id: string,
+    name: string,
+    price: string
+}
+
 export enum Method {
     GET = 'GET',
     POST = 'POST'
