@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Text } from 'react-native';
 import PaymentCard from "../components/PaymentCard"
 import { fetchPublishableKey } from "../helpers";
 import { StripeProvider as _StripeProvider } from '@stripe/stripe-react-native';
@@ -9,7 +10,11 @@ const StripeProvider = _StripeProvider as React.FC<StripeProviderProps>;
 
 const CheckoutScreen = ({ route }: CheckoutScreenProps) => {
     const [publishableKey, setPublishableKey] = useState("");   
-    const { customerId, productsId } = route.params;
+    const { customerId, products } = route.params;
+
+    const sum = products.reduce((acc, curr) => {
+        return acc + parseInt(curr.price)
+    }, 0)
 
     useEffect(() => {
         const init = async () => {
@@ -19,12 +24,19 @@ const CheckoutScreen = ({ route }: CheckoutScreenProps) => {
     
         init();
       }, [])
+      
     return (
-        <StripeProvider 
-            publishableKey={publishableKey}
-        >
-            <PaymentCard customerId={customerId} productsId={productsId} />    
-        </StripeProvider>
+        <>
+            {products.map((product, index) => {
+                return <Text key={index}>{product.name} {product.price}</Text>
+            })}
+            <Text>{`Total ${sum}`}</Text>
+            <StripeProvider 
+                publishableKey={publishableKey}
+            >
+                <PaymentCard customerId={customerId} products={products} />    
+            </StripeProvider>
+        </>
     )
 }
 

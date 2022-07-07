@@ -2,8 +2,9 @@ import { useState, useEffect } from 'react';
 import { Button, Alert, View } from 'react-native';
 import { useStripe } from '@stripe/stripe-react-native';
 import { fetchPaymentSheetParams } from '../helpers';
+import { Product } from '../types';
 
-const PaymentCard = ({ customerId, productsId } : { customerId: string, productsId: string[] }) => {
+const PaymentCard = ({ customerId, products } : { customerId: string, products: Product[] }) => {
     const { initPaymentSheet, presentPaymentSheet } = useStripe();
     const [loading, setLoading] = useState(false);
 
@@ -12,7 +13,7 @@ const PaymentCard = ({ customerId, productsId } : { customerId: string, products
             paymentIntent,
             ephemeralKey, 
             publishableKey
-        } = await fetchPaymentSheetParams(customerId, productsId) || {};
+        } = await fetchPaymentSheetParams(customerId, products) || {};
         
 
         const { error } = await initPaymentSheet({

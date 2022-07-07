@@ -7,11 +7,10 @@ import { Product } from '../types';
 
 const ProductsScreen = ({ navigation, route } : ProductsScreenProps) => {
     const [ products, setProducts ] = useState<Product[]>([]);
-    const [ selectedProducts, setSelectedProducts ] = useState<string[]>([]);
+    const [ selectedProducts, setSelectedProducts ] = useState<Product[]>([]);
 
-    const handleAdd = (id: string) => {
-        setSelectedProducts([...selectedProducts, id]);
-        console.log(selectedProducts);
+    const handleAdd = (product: Product) => {
+        setSelectedProducts([...selectedProducts, product]);
     }
 
     useEffect(() => {
@@ -32,7 +31,7 @@ const ProductsScreen = ({ navigation, route } : ProductsScreenProps) => {
             </ScrollView>
             <Button title={`checkout ${selectedProducts.length}`} onPress={() => navigation.navigate('Checkout', { 
                 customerId: route.params.customerId, 
-                productsId: selectedProducts
+                products: selectedProducts
             })} />
         </>
     )

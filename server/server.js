@@ -43,15 +43,15 @@ app.get('/customer', async (req, res) => {
 })
 
 app.post('/payment-sheet', async (req, res) => {
-    const { customerId, productsId } = req.body;
+    const { customerId, products } = req.body;
     const ephemeralKey = await stripe.ephemeralKeys.create(
         {customer: customerId},
         {apiVersion: '2020-08-27'}
     )
 
     let metadata = {}
-    productsId.map((id, index) => {
-        metadata[`${index}`] = id;
+    products.map((product, index) => {
+        metadata[`${index}`] = product._id;
     })
 
     console.log(metadata);

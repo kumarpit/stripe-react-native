@@ -56,7 +56,7 @@ export const fetchPaymentIntentClientSecret = async () => {
     return { clientSecret, error };
 }
 
-export const fetchPaymentSheetParams = async (customerId: string, productsId: string[]) => {
+export const fetchPaymentSheetParams = async (customerId: string, products: Product[]) => {
     try {
         const response = await fetch(`${API_URL}/payment-sheet`, {
             method: 'POST',
@@ -65,7 +65,7 @@ export const fetchPaymentSheetParams = async (customerId: string, productsId: st
             },
             body: JSON.stringify({
                 customerId: customerId,
-                productsId: productsId
+                products: products
             })
         })
         const { paymentIntent, ephemeralKey, customer, publishableKey } = await response.json();

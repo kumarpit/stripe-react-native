@@ -1,8 +1,9 @@
 import { StackScreenProps } from "@react-navigation/stack"
+import { Product } from "../types"
 
 export type RootStackParamList = {
     Auth: undefined,
-    Checkout: { customerId: string, productsId: string[] },
+    Checkout: { customerId: string, products: Product[] },
     Products: { customerId: string }
 }
 
