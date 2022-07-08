@@ -12,6 +12,7 @@ dotenv.config({ path: '../.env' })
 checkEnv();
 
 const app = express();
+app.use("/stripe", express.raw({ type: "*/*" }))
 app.use(cors());
 app.use(express.json());
 
@@ -53,8 +54,6 @@ app.post('/payment-sheet', async (req, res) => {
     products.map((product, index) => {
         metadata[`${index}`] = product._id;
     })
-
-    console.log(metadata);
 
     const paymentIntent = await stripe.paymentIntents.create({
         amount: 1099,
@@ -131,3 +130,19 @@ app.get('/products', async (req, res) => {
         console.warn(err);
     }
 }) 
+
+app.post('/stripe', async (req, res) => {
+    const sig = req.headers['stripe-signature']
+    let event;
+    try {
+        event = await stripe.webhooks.constructEvent(
+            req.body, 
+            sig, 
+            process.env.WEBHOOK_SECRET
+        )
+        console.log(event.type);
+    } catch (err) {
+        console.error(err);
+        res.status(400).json({ message: err.message })
+    }
+})
